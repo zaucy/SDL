@@ -1,0 +1,513 @@
+/*
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+*/
+
+#ifndef SDL_config_h_
+#define SDL_config_h_
+
+#include "SDL_platform.h"
+
+/**
+ *  \file SDL_config.h
+ */
+
+/* Add any platform that doesn't build using the configure system. */
+#if defined(__WIN32__)
+#include "SDL_config_windows.h"
+#elif defined(__WINRT__)
+#include "SDL_config_winrt.h"
+#elif defined(__WINGDK__)
+#include "SDL_config_wingdk.h"
+#elif defined(__XBOXONE__) || defined(__XBOXSERIES__)
+#include "SDL_config_xbox.h"
+#elif defined(__MACOSX__)
+#include "SDL_config_macosx.h"
+#elif defined(__IPHONEOS__)
+#include "SDL_config_iphoneos.h"
+#elif defined(__ANDROID__)
+#include "SDL_config_android.h"
+#elif defined(__OS2__)
+#include "SDL_config_os2.h"
+#elif defined(__EMSCRIPTEN__)
+#include "SDL_config_emscripten.h"
+#elif defined(__NGAGE__)
+#include "SDL_config_ngage.h"
+#else
+/* This is a minimal configuration just to get SDL running on new platforms. */
+#include "SDL_config_minimal.h"
+#endif /* platform config */
+
+/* Undef any of the platform configs defined since bazel is in charge of configuring these options */
+
+#bazeldefine SDL_ATOMIC_DISABLED
+
+#bazeldefine SDL_AUDIO_DISABLED
+
+#bazeldefine SDL_CPUINFO_DISABLED
+
+#bazeldefine SDL_EVENTS_DISABLED
+
+#bazeldefine SDL_FILE_DISABLED
+
+#bazeldefine SDL_JOYSTICK_DISABLED
+
+#bazeldefine SDL_HAPTIC_DISABLED
+
+#bazeldefine SDL_HIDAPI_DISABLED
+
+#bazeldefine SDL_SENSOR_DISABLED
+
+#bazeldefine SDL_LOADSO_DISABLED
+
+#bazeldefine SDL_RENDER_DISABLED
+
+#bazeldefine SDL_THREADS_DISABLED
+
+#bazeldefine SDL_TIMERS_DISABLED
+
+#bazeldefine SDL_VIDEO_DISABLED
+
+#bazeldefine SDL_POWER_DISABLED
+
+#bazeldefine SDL_FILESYSTEM_DISABLED
+
+#bazeldefine SDL_LOCALE_DISABLED
+
+#bazeldefine SDL_MISC_DISABLED
+
+#bazeldefine SDL_AUDIO_DRIVER_ALSA
+
+#bazeldefine SDL_AUDIO_DRIVER_ALSA_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_ANDROID
+
+#bazeldefine SDL_AUDIO_DRIVER_OPENSLES
+
+#bazeldefine SDL_AUDIO_DRIVER_AAUDIO
+
+#bazeldefine SDL_AUDIO_DRIVER_ARTS
+
+#bazeldefine SDL_AUDIO_DRIVER_ARTS_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_COREAUDIO
+
+#bazeldefine SDL_AUDIO_DRIVER_DISK
+
+#bazeldefine SDL_AUDIO_DRIVER_DSOUND
+
+#bazeldefine SDL_AUDIO_DRIVER_DUMMY
+
+#bazeldefine SDL_AUDIO_DRIVER_EMSCRIPTEN
+
+#bazeldefine SDL_AUDIO_DRIVER_ESD
+
+#bazeldefine SDL_AUDIO_DRIVER_ESD_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_FUSIONSOUND
+
+#bazeldefine SDL_AUDIO_DRIVER_FUSIONSOUND_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_HAIKU
+
+#bazeldefine SDL_AUDIO_DRIVER_JACK
+
+#bazeldefine SDL_AUDIO_DRIVER_JACK_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_NAS
+
+#bazeldefine SDL_AUDIO_DRIVER_NAS_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_NETBSD
+
+#bazeldefine SDL_AUDIO_DRIVER_OSS
+
+#bazeldefine SDL_AUDIO_DRIVER_PAUDIO
+
+#bazeldefine SDL_AUDIO_DRIVER_PIPEWIRE
+
+#bazeldefine SDL_AUDIO_DRIVER_PIPEWIRE_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_PULSEAUDIO
+
+#bazeldefine SDL_AUDIO_DRIVER_PULSEAUDIO_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_QSA
+
+#bazeldefine SDL_AUDIO_DRIVER_SNDIO
+
+#bazeldefine SDL_AUDIO_DRIVER_SNDIO_DYNAMIC
+
+#bazeldefine SDL_AUDIO_DRIVER_SUNAUDIO
+
+#bazeldefine SDL_AUDIO_DRIVER_WASAPI
+
+#bazeldefine SDL_AUDIO_DRIVER_WINMM
+
+#bazeldefine SDL_AUDIO_DRIVER_OS2
+
+#bazeldefine SDL_AUDIO_DRIVER_VITA
+
+#bazeldefine SDL_AUDIO_DRIVER_PSP
+
+#bazeldefine SDL_AUDIO_DRIVER_PS2
+
+#bazeldefine SDL_AUDIO_DRIVER_N3DS
+
+#bazeldefine SDL_INPUT_LINUXEV
+
+#bazeldefine SDL_INPUT_LINUXKD
+
+#bazeldefine SDL_INPUT_FBSDKBIO
+
+#bazeldefine SDL_INPUT_WSCONS
+
+#bazeldefine SDL_JOYSTICK_ANDROID
+
+#bazeldefine SDL_JOYSTICK_HAIKU
+
+#bazeldefine SDL_JOYSTICK_WGI
+
+#bazeldefine SDL_JOYSTICK_DINPUT
+
+#bazeldefine SDL_JOYSTICK_XINPUT
+
+#bazeldefine SDL_JOYSTICK_DUMMY
+
+#bazeldefine SDL_JOYSTICK_IOKIT
+
+#bazeldefine SDL_JOYSTICK_MFI
+
+#bazeldefine SDL_JOYSTICK_LINUX
+
+#bazeldefine SDL_JOYSTICK_OS2
+
+#bazeldefine SDL_JOYSTICK_USBHID
+
+#bazeldefine SDL_JOYSTICK_HIDAPI
+
+#bazeldefine SDL_JOYSTICK_RAWINPUT
+
+#bazeldefine SDL_JOYSTICK_EMSCRIPTEN
+
+#bazeldefine SDL_JOYSTICK_VIRTUAL
+
+#bazeldefine SDL_JOYSTICK_VITA
+
+#bazeldefine SDL_JOYSTICK_PSP
+
+#bazeldefine SDL_JOYSTICK_PS2
+
+#bazeldefine SDL_JOYSTICK_N3DS
+
+#bazeldefine SDL_HAPTIC_DUMMY
+
+#bazeldefine SDL_HAPTIC_LINUX
+
+#bazeldefine SDL_HAPTIC_IOKIT
+
+#bazeldefine SDL_HAPTIC_DINPUT
+
+#bazeldefine SDL_HAPTIC_XINPUT
+
+#bazeldefine SDL_HAPTIC_ANDROID
+
+#bazeldefine SDL_LIBUSB_DYNAMIC
+
+#bazeldefine SDL_UDEV_DYNAMIC
+
+#bazeldefine SDL_SENSOR_ANDROID
+
+#bazeldefine SDL_SENSOR_COREMOTION
+
+#bazeldefine SDL_SENSOR_WINDOWS
+
+#bazeldefine SDL_SENSOR_DUMMY
+
+#bazeldefine SDL_SENSOR_VITA
+
+#bazeldefine SDL_SENSOR_N3DS
+
+#bazeldefine SDL_LOADSO_DLOPEN
+
+#bazeldefine SDL_LOADSO_DUMMY
+
+#bazeldefine SDL_LOADSO_LDG
+
+#bazeldefine SDL_LOADSO_WINDOWS
+
+#bazeldefine SDL_LOADSO_OS2
+
+#bazeldefine SDL_THREAD_GENERIC_COND_SUFFIX
+
+#bazeldefine SDL_THREAD_PTHREAD
+
+#bazeldefine SDL_THREAD_PTHREAD_RECURSIVE_MUTEX
+
+#bazeldefine SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP
+
+#bazeldefine SDL_THREAD_WINDOWS
+
+#bazeldefine SDL_THREAD_OS2
+
+#bazeldefine SDL_THREAD_VITA
+
+#bazeldefine SDL_THREAD_PSP
+
+#bazeldefine SDL_THREAD_PS2
+
+#bazeldefine SDL_THREAD_N3DS
+
+#bazeldefine SDL_TIMER_HAIKU
+
+#bazeldefine SDL_TIMER_DUMMY
+
+#bazeldefine SDL_TIMER_UNIX
+
+#bazeldefine SDL_TIMER_WINDOWS
+
+#bazeldefine SDL_TIMER_OS2
+
+#bazeldefine SDL_TIMER_VITA
+
+#bazeldefine SDL_TIMER_PSP
+
+#bazeldefine SDL_TIMER_PS2
+
+#bazeldefine SDL_TIMER_N3DS
+
+#bazeldefine SDL_VIDEO_DRIVER_ANDROID
+
+#bazeldefine SDL_VIDEO_DRIVER_EMSCRIPTEN
+
+#bazeldefine SDL_VIDEO_DRIVER_HAIKU
+
+#bazeldefine SDL_VIDEO_DRIVER_COCOA
+
+#bazeldefine SDL_VIDEO_DRIVER_UIKIT
+
+#bazeldefine SDL_VIDEO_DRIVER_DIRECTFB
+
+#bazeldefine SDL_VIDEO_DRIVER_DIRECTFB_DYNAMIC
+
+#bazeldefine SDL_VIDEO_DRIVER_DUMMY
+
+#bazeldefine SDL_VIDEO_DRIVER_OFFSCREEN
+
+#bazeldefine SDL_VIDEO_DRIVER_WINDOWS
+
+#bazeldefine SDL_VIDEO_DRIVER_WINRT
+
+#bazeldefine SDL_VIDEO_DRIVER_WAYLAND
+
+#bazeldefine SDL_VIDEO_DRIVER_RPI
+
+#bazeldefine SDL_VIDEO_DRIVER_VIVANTE
+
+#bazeldefine SDL_VIDEO_DRIVER_VIVANTE_VDK
+
+#bazeldefine SDL_VIDEO_DRIVER_OS2
+
+#bazeldefine SDL_VIDEO_DRIVER_QNX
+
+#bazeldefine SDL_VIDEO_DRIVER_RISCOS
+
+#bazeldefine SDL_VIDEO_DRIVER_PSP
+
+#bazeldefine SDL_VIDEO_DRIVER_PS2
+
+#bazeldefine SDL_VIDEO_DRIVER_KMSDRM
+
+#bazeldefine SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC
+
+#bazeldefine SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC_GBM
+
+#bazeldefine SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH
+
+#bazeldefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC
+
+#bazeldefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_EGL
+
+#bazeldefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_CURSOR
+
+#bazeldefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_XKBCOMMON
+
+#bazeldefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_LIBDECOR
+
+#bazeldefine SDL_VIDEO_DRIVER_X11
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_DYNAMIC
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_DYNAMIC_XEXT
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_DYNAMIC_XCURSOR
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_DYNAMIC_XINPUT2
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_DYNAMIC_XFIXES
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_DYNAMIC_XRANDR
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_DYNAMIC_XSS
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XCURSOR
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XDBE
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XINPUT2
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XINPUT2_SUPPORTS_MULTITOUCH
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XFIXES
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XRANDR
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XSCRNSAVER
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_XSHAPE
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS
+
+#bazeldefine SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM
+
+#bazeldefine SDL_VIDEO_DRIVER_VITA
+
+#bazeldefine SDL_VIDEO_DRIVER_N3DS
+
+#bazeldefine SDL_VIDEO_RENDER_D3D
+
+#bazeldefine SDL_VIDEO_RENDER_D3D11
+
+#bazeldefine SDL_VIDEO_RENDER_D3D12
+
+#bazeldefine SDL_VIDEO_RENDER_OGL
+
+#bazeldefine SDL_VIDEO_RENDER_OGL_ES
+
+#bazeldefine SDL_VIDEO_RENDER_OGL_ES2
+
+#bazeldefine SDL_VIDEO_RENDER_DIRECTFB
+
+#bazeldefine SDL_VIDEO_RENDER_METAL
+
+#bazeldefine SDL_VIDEO_RENDER_VITA_GXM
+
+#bazeldefine SDL_VIDEO_RENDER_PS2
+
+#bazeldefine SDL_VIDEO_RENDER_PSP
+
+#bazeldefine SDL_VIDEO_OPENGL
+
+#bazeldefine SDL_VIDEO_OPENGL_ES
+
+#bazeldefine SDL_VIDEO_OPENGL_ES2
+
+#bazeldefine SDL_VIDEO_OPENGL_BGL
+
+#bazeldefine SDL_VIDEO_OPENGL_CGL
+
+#bazeldefine SDL_VIDEO_OPENGL_GLX
+
+#bazeldefine SDL_VIDEO_OPENGL_WGL
+
+#bazeldefine SDL_VIDEO_OPENGL_EGL
+
+#bazeldefine SDL_VIDEO_OPENGL_OSMESA
+
+#bazeldefine SDL_VIDEO_OPENGL_OSMESA_DYNAMIC
+
+#bazeldefine SDL_VIDEO_VULKAN
+
+#bazeldefine SDL_VIDEO_METAL
+
+#bazeldefine SDL_POWER_ANDROID
+
+#bazeldefine SDL_POWER_LINUX
+
+#bazeldefine SDL_POWER_WINDOWS
+
+#bazeldefine SDL_POWER_WINRT
+
+#bazeldefine SDL_POWER_MACOSX
+
+#bazeldefine SDL_POWER_UIKIT
+
+#bazeldefine SDL_POWER_HAIKU
+
+#bazeldefine SDL_POWER_EMSCRIPTEN
+
+#bazeldefine SDL_POWER_HARDWIRED
+
+#bazeldefine SDL_POWER_VITA
+
+#bazeldefine SDL_POWER_PSP
+
+#bazeldefine SDL_POWER_N3DS
+
+#bazeldefine SDL_FILESYSTEM_ANDROID
+
+#bazeldefine SDL_FILESYSTEM_HAIKU
+
+#bazeldefine SDL_FILESYSTEM_COCOA
+
+#bazeldefine SDL_FILESYSTEM_DUMMY
+
+#bazeldefine SDL_FILESYSTEM_RISCOS
+
+#bazeldefine SDL_FILESYSTEM_UNIX
+
+#bazeldefine SDL_FILESYSTEM_WINDOWS
+
+#bazeldefine SDL_FILESYSTEM_EMSCRIPTEN
+
+#bazeldefine SDL_FILESYSTEM_OS2
+
+#bazeldefine SDL_FILESYSTEM_VITA
+
+#bazeldefine SDL_FILESYSTEM_PSP
+
+#bazeldefine SDL_FILESYSTEM_PS2
+
+#bazeldefine SDL_FILESYSTEM_N3DS
+
+#bazeldefine SDL_MISC_DUMMY
+
+#bazeldefine SDL_LOCALE_DUMMY
+
+#bazeldefine SDL_ALTIVEC_BLITTERS
+
+#bazeldefine SDL_ARM_SIMD_BLITTERS
+
+#bazeldefine SDL_ARM_NEON_BLITTERS
+
+#bazeldefine SDL_LIBSAMPLERATE_DYNAMIC
+
+#bazeldefine SDL_USE_IME
+
+#bazeldefine SDL_IPHONE_KEYBOARD
+
+#bazeldefine SDL_IPHONE_LAUNCHSCREEN
+
+#bazeldefine SDL_VIDEO_VITA_PIB
+
+#bazeldefine SDL_VIDEO_VITA_PVR
+
+#bazeldefine SDL_VIDEO_VITA_PVR_OGL
+
+#endif /* SDL_config_h_ */

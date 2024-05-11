@@ -187,3 +187,9 @@ debian/.debhelper/
 debian/files
 debian/libsdl*/
 debian/tmp/
+
+# bazel
+bazel-*
+user.bazelrc
+*.bazel.lock
+
