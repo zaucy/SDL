@@ -2,7 +2,7 @@ load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load(":sdl_setting.bzl", "sdl_config_substitutions", "sdl_config_substitutions_todo", "sdl_setting", "sdl_setting_auto_default")
+load(":sdl_setting.bzl", "sdl_config_substitutions", "sdl_config_substitutions_todo", "sdl_setting", "sdl_setting_auto_default", "sdl_setting_select", "sdl_setting_select_one")
 
 sdl_setting(
     name = "audio",
@@ -636,151 +636,134 @@ cc_library(
         # "src/video/*.h",
         "src/hidapi/*.c",
         "src/hidapi/*.h",
-    ]) + selects.with_or({
-        (":use_audio_winmm", ":use_audio_auto_windows"): glob([
+    ]) + sdl_setting_select("audio", {
+        ("winmm", "auto_windows"): glob([
             "src/audio/winmm/*.c",
             "src/audio/winmm/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_core_windows", ":use_core_auto_windows"): glob([
+    }) + sdl_setting_select_one("core", {
+        ("windows", "auto_windows"): glob([
             "src/core/windows/*.c",
             "src/core/windows/*.h",
         ]),
-        (":use_core_winrt"): glob([
+        "winrt": glob([
             "src/core/winrt/*.c",
             "src/core/winrt/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_filesystem_windows", ":use_filesystem_auto_windows"): glob([
+    }) + sdl_setting_select_one("filesystem", {
+        ("windows", "auto_windows"): glob([
             "src/filesystem/windows/*.c",
             "src/filesystem/windows/*.h",
         ]),
-        (":use_filesystem_winrt"): glob([
+        "winrt": glob([
             "src/filesystem/winrt/*.c",
             "src/filesystem/winrt/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_haptic_windows", ":use_haptic_auto_windows"): glob([
+    }) + sdl_setting_select("haptic", {
+        ("windows", "auto_windows"): glob([
             "src/haptic/windows/*.c",
             "src/haptic/windows/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_thread_generic"): glob([
+    }) + sdl_setting_select_one("thread", {
+        "generic": glob([
             "src/thread/generic/*.c",
             "src/thread/generic/*.h",
         ]),
-        (":use_thread_stdcpp"): glob([
+        "stdcpp": glob([
             "src/thread/stdcpp/*.c",
             "src/thread/stdcpp/*.h",
         ]),
-        (":use_thread_pthread"): glob([
+        "pthread": glob([
             "src/thread/pthread/*.c",
             "src/thread/pthread/*.h",
         ]),
-        (":use_thread_windows", ":use_thread_auto_windows"): glob([
+        ("windows", "auto_windows"): glob([
             "src/thread/generic/*.c",
             "src/thread/generic/*.h",
             "src/thread/windows/*.c",
             "src/thread/windows/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_render_d3d", ":use_render_auto_windows"): glob([
+    }) + sdl_setting_select("render", {
+        ("d3d", "auto_windows"): glob([
             "src/render/direct3d/*.c",
             "src/render/direct3d/*.h",
         ]),
-        "//conditions:default": [],
-    }) + selects.with_or({
-        (":use_render_d3d11", ":use_render_auto_windows"): glob([
+        ("d3d11", "auto_windows"): glob([
             "src/render/direct3d11/*.c",
             "src/render/direct3d11/*.h",
         ]),
-        "//conditions:default": [],
-    }) + selects.with_or({
-        (":use_render_d3d12", ":use_render_auto_windows"): glob([
+        ("d3d12", "auto_windows"): glob([
             "src/render/direct3d12/*.c",
             "src/render/direct3d12/*.h",
         ]),
-        "//conditions:default": [],
-    }) + selects.with_or({
-        (":use_render_ogl", ":use_render_auto_windows"): glob([
+        ("ogl", "auto_windows"): glob([
             "src/render/opengl/*.c",
             "src/render/opengl/*.h",
         ]),
-        "//conditions:default": [],
-    }) + selects.with_or({
-        (":use_render_ogl_es", ":use_render_auto_windows"): glob([
+        ("ogl_es", "auto_windows"): glob([
             "src/render/opengles/*.c",
             "src/render/opengles/*.h",
         ]),
-        "//conditions:default": [],
-    }) + selects.with_or({
-        (":use_render_ogl_es2", ":use_render_auto_windows"): glob([
+        ("ogl_es2", "auto_windows"): glob([
             "src/render/opengles2/*.c",
             "src/render/opengles2/*.h",
         ]),
-        "//conditions:default": [],
-    }) + select({
-        ":use_render_software": glob([
-            "src/render/software/*.c",
-            "src/render/software/*.h",
-        ]),
-        "//conditions:default": [],
-    }) + selects.with_or({
-        (":use_timer_windows", ":use_timer_auto_windows"): glob([
+    }) + sdl_setting_select("timer", {
+        ("windows", "auto_windows"): glob([
             "src/timer/windows/*.c",
             "src/timer/windows/*.h",
         ]),
-        (":use_timer_dummy"): glob([
+        "dummy": glob([
             "src/timer/dummy/*.c",
             "src/timer/dummy/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_misc_windows", ":use_misc_auto_windows"): glob([
+    }) + sdl_setting_select("misc", {
+        ("windows", "auto_windows"): glob([
             "src/misc/windows/*.c",
             "src/misc/windows/*.h",
         ]),
-        (":use_misc_winrt"): glob([
+        "winrt": glob([
             "src/misc/winrt/*.c",
             "src/misc/winrt/*.h",
         ]),
-        (":use_misc_dummy"): glob([
+        "dummy": glob([
             "src/misc/dummy/*.c",
             "src/misc/dummy/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_joystick_dinput", ":use_joystick_auto_windows"): [
+    }) + sdl_setting_select("joystick", {
+        ("dinput", "auto_windows"): [
             "src/joystick/windows/SDL_dinputjoystick.c",
             "src/joystick/windows/SDL_dinputjoystick_c.h",
         ],
-    }) + selects.with_or({
-        (":use_power_windows", ":use_power_auto_windows"): glob([
+    }) + sdl_setting_select("power", {
+        ("windows", "auto_windows"): glob([
             "src/power/windows/*.c",
             "src/power/windows/*.h",
         ]),
-        (":use_power_winrt"): glob([
+        "winrt": glob([
             "src/power/winrt/*.c",
             "src/power/winrt/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_sensor_windows", ":use_sensor_auto_windows"): glob([
+    }) + sdl_setting_select("sensor", {
+        ("windows", "auto_windows"): glob([
             "src/sensor/windows/*.c",
             "src/sensor/windows/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_video_windows", ":use_video_auto_windows"): glob([
+    }) + sdl_setting_select("video", {
+        ("windows", "auto_windows"): glob([
             "src/video/windows/*.c",
             "src/video/windows/*.h",
         ]),
-        (":use_video_winrt"): glob([
+        "winrt": glob([
             "src/video/winrt/*.c",
             "src/video/winrt/*.h",
         ]),
-    }) + selects.with_or({
-        (":use_locale_windows", ":use_locale_auto_windows"): glob([
+    }) + sdl_setting_select("locale", {
+        ("windows", "auto_windows"): glob([
             "src/locale/windows/*.c",
             "src/locale/windows/*.h",
         ]),
-        (":use_locale_winrt"): glob([
+        "winrt": glob([
             "src/locale/winrt/*.c",
             "src/locale/winrt/*.h",
         ]),

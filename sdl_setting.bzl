@@ -43,6 +43,38 @@ def sdl_setting_auto_default(name, sdl_setting_name, constraint_values):
         constraint_values = constraint_values,
     )
 
+def sdl_setting_select(setting, opts, default = []):
+    result = []
+    for key in opts:
+        transformed_opts = {
+            "//conditions:default": default,
+        }
+        value = opts[key]
+        if type(key) == "tuple":
+            transformed_tuple = list(key)
+            for i in range(len(transformed_tuple)):
+                transformed_tuple[i] = ":use_{}_{}".format(setting, transformed_tuple[i])
+            transformed_opts[tuple(transformed_tuple)] = value
+        else:
+            transformed_opts[":use_{}_{}".format(setting, key)] = value
+        result += selects.with_or(transformed_opts)
+    return result
+
+def sdl_setting_select_one(setting, opts, default = []):
+    transformed_opts = {
+        "//conditions:default": default,
+    }
+    for key in opts:
+        value = opts[key]
+        if type(key) == "tuple":
+            transformed_tuple = list(key)
+            for i in range(len(transformed_tuple)):
+                transformed_tuple[i] = ":use_{}_{}".format(setting, transformed_tuple[i])
+            transformed_opts[tuple(transformed_tuple)] = value
+        else:
+            transformed_opts[":use_{}_{}".format(setting, key)] = value
+    return selects.with_or(transformed_opts)
+
 def sdl_config_substitutions(setting, value, defines = [], auto_setting = None):
     enabled_subs = {}
     for define in defines:
