@@ -54,44 +54,6 @@
 #include "SDL_config_minimal.h"
 #endif /* platform config */
 
-/* Undef any of the platform configs defined since bazel is in charge of configuring these options */
-
-#bazeldefine SDL_ATOMIC_DISABLED
-
-#bazeldefine SDL_AUDIO_DISABLED
-
-#bazeldefine SDL_CPUINFO_DISABLED
-
-#bazeldefine SDL_EVENTS_DISABLED
-
-#bazeldefine SDL_FILE_DISABLED
-
-#bazeldefine SDL_JOYSTICK_DISABLED
-
-#bazeldefine SDL_HAPTIC_DISABLED
-
-#bazeldefine SDL_HIDAPI_DISABLED
-
-#bazeldefine SDL_SENSOR_DISABLED
-
-#bazeldefine SDL_LOADSO_DISABLED
-
-#bazeldefine SDL_RENDER_DISABLED
-
-#bazeldefine SDL_THREADS_DISABLED
-
-#bazeldefine SDL_TIMERS_DISABLED
-
-#bazeldefine SDL_VIDEO_DISABLED
-
-#bazeldefine SDL_POWER_DISABLED
-
-#bazeldefine SDL_FILESYSTEM_DISABLED
-
-#bazeldefine SDL_LOCALE_DISABLED
-
-#bazeldefine SDL_MISC_DISABLED
-
 #bazeldefine SDL_AUDIO_DRIVER_ALSA
 
 #bazeldefine SDL_AUDIO_DRIVER_ALSA_DYNAMIC

@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "checkkeys",
+    srcs = ["checkkeys.c"],
+    deps = ["//:sdl"],
+)
+
+cc_test(
+    name = "checkkeys_threads",
+    srcs = ["checkkeys_threads.c"],
+    deps = ["//:sdl"],
+)
