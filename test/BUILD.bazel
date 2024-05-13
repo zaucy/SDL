@@ -1,13 +1,298 @@
-load("@rules_cc//cc:defs.bzl", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
-cc_test(
-    name = "checkkeys",
-    srcs = ["checkkeys.c"],
-    deps = ["//:sdl"],
+TEST_AUTOMATIONS = [
+    "audio",
+    "clipboard",
+    "events",
+    "guid",
+    "hints",
+    "joystick",
+    "keyboard",
+    "log",
+    "main",
+    "math",
+    "mouse",
+    "pixels",
+    "platform",
+    "rect",
+    "render",
+    "rwops",
+    "sdltest",
+    "stdlib",
+    "subsystems",
+    "surface",
+    "syswm",
+    "timer",
+    "video",
+]
+
+[write_file(
+    name = "testautomation_{}_h".format(test),
+    out = "_{}/testautomation_suites.h".format(test),
+    content = [
+        "#ifndef _testsuites_h",
+        "#define _testsuites_h",
+        "",
+        "#include \"SDL_test.h\"",
+        "extern SDLTest_TestSuiteReference {}TestSuite;".format(test),
+        "SDLTest_TestSuiteReference *testSuites[] = {",
+        "\t&{}TestSuite,".format(test),
+        "\tNULL",
+        "};",
+        "",
+        "#endif",
+    ],
+) for test in TEST_AUTOMATIONS]
+
+[copy_file(
+    name = "testautomation_{}_src".format(test),
+    out = "_{}/testautomation.c".format(test),
+    src = "testautomation.c",
+) for test in TEST_AUTOMATIONS]
+
+[cc_test(
+    name = "testautomation_{}".format(test),
+    srcs = [
+        ":testautomation_{}_h".format(test),
+        ":testautomation_{}_src".format(test),
+        "testautomation_{}.c".format(test),
+    ],
+    deps = [
+        "//:SDL2main",
+        "//:SDL2test",
+    ],
+) for test in TEST_AUTOMATIONS]
+
+cc_library(
+    name = "testutils",
+    srcs = ["testutils.c"],
+    hdrs = ["testutils.h"],
+    deps = ["//:SDL2"],
 )
 
-cc_test(
-    name = "checkkeys_threads",
-    srcs = ["checkkeys_threads.c"],
-    deps = ["//:sdl"],
+cc_binary(
+    name = "checkkeys",
+    srcs = ["checkkeys.c"],
+    deps = ["//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "checkkeysthreads",
+    srcs = ["checkkeysthreads.c"],
+    deps = ["//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "loopwave",
+    srcs = ["loopwave.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+    data = ["sample.wav"],
+    args = ["$(rootpath sample.wav)"],
+)
+
+cc_binary(
+    name = "loopwavequeue",
+    srcs = ["loopwavequeue.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+    data = ["sample.wav"],
+    args = ["$(rootpath sample.wav)"],
+)
+
+cc_binary(
+    name = "testsurround",
+    srcs = ["testsurround.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testerror",
+    srcs = ["testerror.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testfile",
+    srcs = ["testfile.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testgl2",
+    srcs = ["testgl2.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testiconv",
+    srcs = ["testiconv.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testjoystick",
+    srcs = ["testjoystick.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testkeys",
+    srcs = ["testkeys.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testloadso",
+    srcs = ["testloadso.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testlocale",
+    srcs = ["testlocale.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testlock",
+    srcs = ["testlock.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testmouse",
+    srcs = ["testmouse.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testmultiaudio",
+    srcs = ["testmultiaudio.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+    data = ["sample.wav"],
+    args = ["$(rootpath sample.wav)"],
+)
+
+cc_binary(
+    name = "testoverlay2",
+    srcs = ["testoverlay2.c", "testyuv_cvt.h", "testyuv_cvt.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+    data = ["moose.dat"],
+)
+
+cc_binary(
+    name = "testsem",
+    srcs = ["testsem.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+TEST_SHAPES = [
+    "shapes/p01_shape24.bmp",
+    "shapes/p01_shape32alpha.bmp",
+    # "shapes/p01_shape8.bmp",
+    "shapes/p02_shape24.bmp",
+    "shapes/p02_shape32alpha.bmp",
+    # "shapes/p02_shape8.bmp",
+    "shapes/p03_shape24.bmp",
+    # "shapes/p03_shape8.bmp",
+    # "shapes/p04_shape1.bmp",
+    "shapes/p04_shape24.bmp",
+    "shapes/p04_shape32alpha.bmp",
+    # "shapes/p04_shape8.bmp",
+    # "shapes/p05_shape8.bmp",
+    # "shapes/p06_shape1alpha.bmp",
+    "shapes/p06_shape24.bmp",
+    "shapes/p06_shape32alpha.bmp",
+    # "shapes/p06_shape8.bmp",
+    "shapes/p07_shape24.bmp",
+    "shapes/p07_shape32alpha.bmp",
+    # "shapes/p07_shape8.bmp",
+    "shapes/p08_shape24.bmp",
+    "shapes/p08_shape32alpha.bmp",
+    # "shapes/p08_shape8.bmp",
+    "shapes/p09_shape24.bmp",
+    "shapes/p09_shape32alpha.bmp",
+    # "shapes/p09_shape8.bmp",
+    # "shapes/p10_shape1.bmp",
+    "shapes/p10_shape24.bmp",
+    "shapes/p10_shape32alpha.bmp",
+    # "shapes/p10_shape8.bmp",
+    "shapes/p11_shape24.bmp",
+    "shapes/p11_shape32alpha.bmp",
+    # "shapes/p11_shape8.bmp",
+    "shapes/p12_shape24.bmp",
+    # "shapes/p12_shape8.bmp",
+    "shapes/p13_shape24.bmp",
+    "shapes/p13_shape32alpha.bmp",
+    # "shapes/p13_shape8.bmp",
+    "shapes/p14_shape24.bmp",
+    # "shapes/p14_shape8.bmp",
+    "shapes/p15_shape24.bmp",
+    "shapes/p15_shape32alpha.bmp",
+    # "shapes/p15_shape8.bmp",
+    # "shapes/p16_shape1.bmp",
+    "shapes/p16_shape24.bmp",
+    # "shapes/p16_shape8.bmp",
+    "shapes/trollface_24.bmp",
+    "shapes/trollface_32alpha.bmp",
+]
+
+cc_binary(
+    name = "testshape",
+    srcs = ["testshape.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+    data = TEST_SHAPES,
+    args = ["$(rootpath {})".format(shape) for shape in TEST_SHAPES],
+)
+
+cc_binary(
+    name = "testsprite2",
+    srcs = ["testsprite2.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+    data = ["icon.bmp"],
+    args = ["$(rootpath icon.bmp)"],
+)
+
+cc_binary(
+    name = "testthread",
+    srcs = ["testthread.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testtimer",
+    srcs = ["testtimer.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testver",
+    srcs = ["testver.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testwm2",
+    srcs = ["testwm2.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "torturethread",
+    srcs = ["torturethread.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "controllermap",
+    srcs = ["controllermap.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
+)
+
+cc_binary(
+    name = "testmessage",
+    srcs = ["testmessage.c"],
+    deps = [":testutils", "//:SDL2test", "//:SDL2main"],
 )

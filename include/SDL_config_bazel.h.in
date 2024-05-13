@@ -28,6 +28,8 @@
  *  \file SDL_config.h
  */
 
+#define SDL_LEAN_AND_MEAN 1
+
 /* Add any platform that doesn't build using the configure system. */
 #if defined(__WIN32__)
 #include "SDL_config_windows.h"
@@ -373,6 +375,8 @@
 #bazeldefine SDL_VIDEO_RENDER_PS2
 
 #bazeldefine SDL_VIDEO_RENDER_PSP
+
+#bazeldefine HAVE_OPENGL
 
 #bazeldefine SDL_VIDEO_OPENGL
 

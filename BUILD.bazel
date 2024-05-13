@@ -84,7 +84,8 @@ sdl_setting_auto_default(
 sdl_setting(
     name = "haptic",
     values = [
-        "windows",
+        "dinput",
+        "xinput",
     ],
 )
 sdl_setting_auto_default(
@@ -307,6 +308,22 @@ sdl_setting_auto_default(
     constraint_values = ["@platforms//os:windows"],
 )
 
+sdl_setting(
+    name = "loadso",
+    values = [
+        "dlopen",
+        "dummy",
+        "ldg",
+        "windows",
+        "os2",
+    ],
+)
+sdl_setting_auto_default(
+    name = "windows",
+    sdl_setting_name = "loadso",
+    constraint_values = ["@platforms//os:windows"],
+)
+
 cc_library(
     name = "sdl_internal_hdrs",
     hdrs = glob(["src/**/*.h"], exclude = ["src/main/**/*.h"]) + [
@@ -318,12 +335,12 @@ cc_library(
 )
 
 cc_library(
-    name = "sdl_main",
+    name = "SDL2main",
     visibility = ["//visibility:public"],
     hdrs = ["include/SDL_main.h"],
     includes = ["include"],
     strip_include_prefix = "include",
-    deps = [":sdl", ":sdl_internal_hdrs"],
+    deps = [":SDL2", ":sdl_internal_hdrs"],
     srcs = selects.with_or({
         (":use_main_windows", ":use_main_auto_windows"): glob(["src/main/windows/*.c"]),
         (":use_main_winrt"): glob(["src/main/winrt/*.c"]),
@@ -335,6 +352,8 @@ expand_template(
     out = "SDL_config.h",
     template = "include/SDL_config_bazel.h.in",
     substitutions =
+        sdl_config_substitutions(setting = "render", value = "ogl", auto_setting = "windows", defines = ["HAVE_OPENGL"]) |
+
         # audio
         sdl_config_substitutions(setting = "audio", value = "alsa", defines = ["SDL_AUDIO_DRIVER_ALSA"]) |
         sdl_config_substitutions(setting = "audio", value = "alsa_dynamic", defines = ["SDL_AUDIO_DRIVER_ALSA_DYNAMIC"]) |
@@ -382,7 +401,7 @@ expand_template(
 
         # joystick
         sdl_config_substitutions(setting = "joystick", value = "dinput", auto_setting = "windows", defines = ["SDL_JOYSTICK_DINPUT"]) |
-        sdl_config_substitutions(setting = "joystick", value = "xinput", defines = ["SDL_JOYSTICK_XINPUT"]) |
+        sdl_config_substitutions(setting = "joystick", value = "xinput", auto_setting = "windows", defines = ["SDL_JOYSTICK_XINPUT"]) |
         sdl_config_substitutions(setting = "joystick", value = "rawinput", defines = ["SDL_JOYSTICK_RAWINPUT"]) |
         sdl_config_substitutions(setting = "joystick", value = "virtual", defines = ["SDL_JOYSTICK_VIRTUAL"]) |
 
@@ -399,6 +418,13 @@ expand_template(
         # timer
         sdl_config_substitutions(setting = "timer", value = "windows", auto_setting = "windows", defines = ["SDL_TIMER_WINDOWS"]) |
 
+        # filesystem
+        sdl_config_substitutions(setting = "filesystem", value = "windows", auto_setting = "windows", defines = ["SDL_FILESYSTEM_WINDOWS"]) |
+
+        # haptic
+        sdl_config_substitutions(setting = "haptic", value = "dinput", auto_setting = "windows", defines = ["SDL_HAPTIC_DINPUT"]) |
+        sdl_config_substitutions(setting = "haptic", value = "xinput", auto_setting = "windows", defines = ["SDL_HAPTIC_XINPUT"]) |
+
         # render
         sdl_config_substitutions(setting = "render", value = "d3d", auto_setting = "windows", defines = ["SDL_VIDEO_RENDER_D3D"]) |
         sdl_config_substitutions(setting = "render", value = "d3d11", auto_setting = "windows", defines = ["SDL_VIDEO_RENDER_D3D11"]) |
@@ -411,7 +437,9 @@ expand_template(
         sdl_config_substitutions(setting = "render", value = "ps2", defines = ["SDL_VIDEO_RENDER_PS2"]) |
         sdl_config_substitutions(setting = "render", value = "psp", defines = ["SDL_VIDEO_RENDER_PSP"]) |
         sdl_config_substitutions(setting = "render", value = "vita_gxm", defines = ["SDL_VIDEO_RENDER_VITA_GXM"]) |
-        sdl_config_substitutions(setting = "render", value = "sw", defines = ["SDL_VIDEO_RENDER_SW"]) |
+
+        # loadso
+        sdl_config_substitutions(setting = "loadso", value = "windows", auto_setting = "windows", defines = ["SDL_LOADSO_WINDOWS"]) |
 
         # TODO
         sdl_config_substitutions_todo([
@@ -437,8 +465,6 @@ expand_template(
             "SDL_HAPTIC_DUMMY",
             "SDL_HAPTIC_LINUX",
             "SDL_HAPTIC_IOKIT",
-            "SDL_HAPTIC_DINPUT",
-            "SDL_HAPTIC_XINPUT",
             "SDL_HAPTIC_ANDROID",
             "SDL_LIBUSB_DYNAMIC",
             "SDL_UDEV_DYNAMIC",
@@ -450,7 +476,6 @@ expand_template(
             "SDL_LOADSO_DLOPEN",
             "SDL_LOADSO_DUMMY",
             "SDL_LOADSO_LDG",
-            "SDL_LOADSO_WINDOWS",
             "SDL_LOADSO_OS2",
             "SDL_THREAD_PTHREAD_RECURSIVE_MUTEX",
             "SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP",
@@ -544,7 +569,6 @@ expand_template(
             "SDL_FILESYSTEM_DUMMY",
             "SDL_FILESYSTEM_RISCOS",
             "SDL_FILESYSTEM_UNIX",
-            "SDL_FILESYSTEM_WINDOWS",
             "SDL_FILESYSTEM_EMSCRIPTEN",
             "SDL_FILESYSTEM_OS2",
             "SDL_FILESYSTEM_VITA",
@@ -567,7 +591,7 @@ expand_template(
 )
 
 cc_library(
-    name = "sdl",
+    name = "SDL2",
     visibility = ["//visibility:public"],
     hdrs = glob(["include/*.h"], exclude = ["include/SDL_config.h"]),
     strip_include_prefix = "include",
@@ -579,6 +603,11 @@ cc_library(
         ":sdl_internal_hdrs",
     ],
     linkopts = select({
+        "@rules_cc//cc/compiler:msvc-cl": [
+            "/WX:4006",
+        ],
+        "//conditions:default": [],
+    }) + select({
         "@platforms//os:windows": [
             "-DEFAULTLIB:user32",
             "-DEFAULTLIB:gdi32",
@@ -596,6 +625,13 @@ cc_library(
             "-DEFAULTLIB:kernel32",
         ],
         "//conditions:default": [],
+    }) + sdl_setting_select("joystick", {
+        ("dinput", "auto_windows"): [
+            "-DEFAULTLIB:dinput8",
+        ],
+        ("dinput", "xinput", "auto_windows"): [
+            "-DEFAULTLIB:dxguid",
+        ],
     }),
     srcs = [":sdl_config_h"] + glob([
         "src/*.c",
@@ -632,10 +668,15 @@ cc_library(
         "src/power/*.h",
         "src/sensor/*.c",
         "src/sensor/*.h",
-        # "src/video/*.c",
-        # "src/video/*.h",
+        "src/video/*.c",
+        "src/video/*.h",
+        "src/video/yuv2rgb/*.c",
+        "src/video/yuv2rgb/*.h",
+        "src/video/*.h",
         "src/hidapi/*.c",
         "src/hidapi/*.h",
+        "src/locale/*.c",
+        "src/locale/*.h",
     ]) + sdl_setting_select("audio", {
         ("winmm", "auto_windows"): glob([
             "src/audio/winmm/*.c",
@@ -660,7 +701,7 @@ cc_library(
             "src/filesystem/winrt/*.h",
         ]),
     }) + sdl_setting_select("haptic", {
-        ("windows", "auto_windows"): glob([
+        ("dinput", "xinput", "auto_windows"): glob([
             "src/haptic/windows/*.c",
             "src/haptic/windows/*.h",
         ]),
@@ -731,10 +772,10 @@ cc_library(
             "src/misc/dummy/*.h",
         ]),
     }) + sdl_setting_select("joystick", {
-        ("dinput", "auto_windows"): [
-            "src/joystick/windows/SDL_dinputjoystick.c",
-            "src/joystick/windows/SDL_dinputjoystick_c.h",
-        ],
+        ("dinput", "xinput", "auto_windows"): glob([
+            "src/joystick/windows/*.c",
+            "src/joystick/windows/*.h",
+        ]),
     }) + sdl_setting_select("power", {
         ("windows", "auto_windows"): glob([
             "src/power/windows/*.c",
@@ -767,5 +808,17 @@ cc_library(
             "src/locale/winrt/*.c",
             "src/locale/winrt/*.h",
         ]),
+    }) + sdl_setting_select_one("loadso", {
+        ("windows", "auto_windows"): glob([
+            "src/loadso/windows/*.c",
+            "src/loadso/windows/*.h",
+        ]),
     }),
+)
+
+cc_library(
+    name = "SDL2test",
+    visibility = ["//visibility:public"],
+    srcs = glob(["src/test/*.c", "src/test/*.h"]),
+    deps = [":SDL2"],
 )
