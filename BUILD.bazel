@@ -822,3 +822,15 @@ cc_library(
     srcs = glob(["src/test/*.c", "src/test/*.h"]),
     deps = [":SDL2"],
 )
+
+alias(
+    name = "sdl2",
+    visibility = ["//visibility:public"],
+    actual = ":SDL2",
+)
+
+alias(
+    name = "sdl2_main",
+    visibility = ["//visibility:public"],
+    actual = ":SDL2main",
+)
