@@ -412,7 +412,7 @@ expand_template(
         sdl_config_substitutions(setting = "power", value = "windows", auto_setting = "windows", defines = ["SDL_POWER_WINDOWS"]) |
 
         # video
-        sdl_config_substitutions(setting = "video", value = "windows", auto_setting = "windows", defines = ["SDL_VIDEO_DRIVER_WINDOWS"]) |
+        sdl_config_substitutions(setting = "video", value = "windows", auto_setting = "windows", defines = ["SDL_VIDEO_DRIVER_WINDOWS", "SDL_VIDEO_OPENGL", "SDL_VIDEO_OPENGL_WGL", "SDL_VIDEO_OPENGL_ES2", "SDL_VIDEO_OPENGL_EGL", "SDL_VIDEO_VULKAN"]) |
         sdl_config_substitutions(setting = "video", value = "dummy", auto_setting = "windows", defines = ["SDL_VIDEO_DRIVER_DUMMY"]) |
 
         # timer
@@ -430,8 +430,8 @@ expand_template(
         sdl_config_substitutions(setting = "render", value = "d3d11", auto_setting = "windows", defines = ["SDL_VIDEO_RENDER_D3D11"]) |
         sdl_config_substitutions(setting = "render", value = "d3d12", auto_setting = "windows", defines = ["SDL_VIDEO_RENDER_D3D12"]) |
         sdl_config_substitutions(setting = "render", value = "metal", defines = ["SDL_VIDEO_RENDER_METAL"]) |
-        sdl_config_substitutions(setting = "render", value = "ogl", defines = ["SDL_VIDEO_RENDER_OGL"]) |
-        sdl_config_substitutions(setting = "render", value = "ogl_es2", defines = ["SDL_VIDEO_RENDER_OGL_ES2"]) |
+        sdl_config_substitutions(setting = "render", value = "ogl", auto_setting = "windows", defines = ["SDL_VIDEO_RENDER_OGL"]) |
+        sdl_config_substitutions(setting = "render", value = "ogl_es2", auto_setting = "windows", defines = ["SDL_VIDEO_RENDER_OGL_ES2"]) |
         sdl_config_substitutions(setting = "render", value = "ogl_es", defines = ["SDL_VIDEO_RENDER_OGL_ES"]) |
         sdl_config_substitutions(setting = "render", value = "directfb", defines = ["SDL_VIDEO_RENDER_DIRECTFB"]) |
         sdl_config_substitutions(setting = "render", value = "ps2", defines = ["SDL_VIDEO_RENDER_PS2"]) |
@@ -443,6 +443,7 @@ expand_template(
 
         # TODO
         sdl_config_substitutions_todo([
+            "SDL_VIDEO_OPENGL_ES",
             "SDL_INPUT_LINUXEV",
             "SDL_INPUT_LINUXKD",
             "SDL_INPUT_FBSDKBIO",
@@ -540,14 +541,9 @@ expand_template(
             "SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM",
             "SDL_VIDEO_DRIVER_VITA",
             "SDL_VIDEO_DRIVER_N3DS",
-            "SDL_VIDEO_OPENGL",
-            "SDL_VIDEO_OPENGL_ES",
-            "SDL_VIDEO_OPENGL_ES2",
             "SDL_VIDEO_OPENGL_BGL",
             "SDL_VIDEO_OPENGL_CGL",
             "SDL_VIDEO_OPENGL_GLX",
-            "SDL_VIDEO_OPENGL_WGL",
-            "SDL_VIDEO_OPENGL_EGL",
             "SDL_VIDEO_OPENGL_OSMESA",
             "SDL_VIDEO_OPENGL_OSMESA_DYNAMIC",
             "SDL_VIDEO_VULKAN",
